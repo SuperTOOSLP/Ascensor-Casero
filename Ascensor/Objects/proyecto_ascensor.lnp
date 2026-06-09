@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\interrupcion.obj" 
+TO ".\Objects\proyecto_ascensor" 
+PRINT(".\Listings\proyecto_ascensor.m51")

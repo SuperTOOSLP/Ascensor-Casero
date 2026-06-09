@@ -1,0 +1,56 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              06/06/2026 09:57:15 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "interrupcion.h"
+   3          
+   4          sbit boton_subir = P3^4;
+   5          sbit boton_bajar = P3^5;
+   6          
+   7          int main(void){
+   8   1        
+   9   1        interrupcion_init();
+  10   1        led_arriba = 1;
+  11   1        led_abajo = 0; /// led abajo encendido
+  12   1      
+  13   1        while(1){
+  14   2          
+  15   2          if(sensor_arriba == 0 && sensor_abajo == 0){
+  16   3            pin_bajar = 0;
+  17   3            pin_subir = 0;
+  18   3          }
+  19   2          
+  20   2          if(boton_subir == 0 && boton_bajar == 1){
+  21   3            pin_subir = 1;
+  22   3            pin_bajar = 0;
+  23   3          }
+  24   2          if(boton_subir == 1 && boton_bajar == 0){
+  25   3            pin_subir = 0;
+  26   3            pin_bajar = 1;
+  27   3          }
+  28   2          
+  29   2        }   
+  30   1        
+  31   1      }
+  32            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     39    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
