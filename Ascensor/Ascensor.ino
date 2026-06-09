@@ -7,16 +7,16 @@ const int pin_subir = 8;
 const int pin_bajar = 9;
 
 // LEDs indicadores
-const int led_arriba = 10;
-const int led_abajo = 11;
+const int led_arriba = 3;
+const int led_abajo = 2;
 
 // Sensores de final de carrera
-const int sensor_arriba = 2;   // INT0
-const int sensor_abajo = 3;    // INT1
+const int sensor_arriba = 6;
+const int sensor_abajo = 5;
 
 // Botones
-const int boton_subir = 4;
-const int boton_bajar = 5;
+const int boton_subir = 12;
+const int boton_bajar = 11;
 
 void setup() {
 
@@ -36,29 +36,38 @@ void setup() {
   digitalWrite(pin_subir, LOW);
   digitalWrite(pin_bajar, LOW);
 
-  // Estado inicial
+  // Estado inicial (cabina abajo)
   digitalWrite(led_arriba, HIGH);
   digitalWrite(led_abajo, LOW);
-
-  // Interrupciones
-  attachInterrupt(
-    digitalPinToInterrupt(sensor_arriba),
-    ISR_sensor_arriba,
-    LOW
-  );
-
-  attachInterrupt(
-    digitalPinToInterrupt(sensor_abajo),
-    ISR_sensor_abajo,
-    LOW
-  );
 }
 
 void loop() {
 
-  // Seguridad:
-  // Si ambos sensores están activos,
-  // detener motor
+  // ==========================
+  // SENSOR ARRIBA
+  // ==========================
+  if (digitalRead(sensor_arriba) == LOW) {
+
+    digitalWrite(pin_subir, LOW);   // detener motor
+
+    digitalWrite(led_arriba, LOW);  // encender LED arriba
+    digitalWrite(led_abajo, HIGH);  // apagar LED abajo
+  }
+
+  // ==========================
+  // SENSOR ABAJO
+  // ==========================
+  if (digitalRead(sensor_abajo) == LOW) {
+
+    digitalWrite(pin_bajar, LOW);   // detener motor
+
+    digitalWrite(led_arriba, HIGH); // apagar LED arriba
+    digitalWrite(led_abajo, LOW);   // encender LED abajo
+  }
+
+  // ==========================
+  // SEGURIDAD
+  // ==========================
   if (digitalRead(sensor_arriba) == LOW &&
       digitalRead(sensor_abajo) == LOW) {
 
@@ -66,41 +75,25 @@ void loop() {
     digitalWrite(pin_bajar, LOW);
   }
 
-  // Subir
+  // ==========================
+  // BOTÓN SUBIR
+  // ==========================
   if (digitalRead(boton_subir) == LOW &&
-      digitalRead(boton_bajar) == HIGH) {
+      digitalRead(boton_bajar) == HIGH &&
+      digitalRead(sensor_arriba) == HIGH) {
 
     digitalWrite(pin_subir, HIGH);
     digitalWrite(pin_bajar, LOW);
   }
 
-  // Bajar
+  // ==========================
+  // BOTÓN BAJAR
+  // ==========================
   if (digitalRead(boton_subir) == HIGH &&
-      digitalRead(boton_bajar) == LOW) {
+      digitalRead(boton_bajar) == LOW &&
+      digitalRead(sensor_abajo) == HIGH) {
 
     digitalWrite(pin_subir, LOW);
     digitalWrite(pin_bajar, HIGH);
   }
-}
-
-// ===============================
-// INTERRUPCIÓN SENSOR ARRIBA
-// ===============================
-void ISR_sensor_arriba() {
-
-  digitalWrite(pin_subir, LOW);   // detener
-
-  digitalWrite(led_arriba, LOW);  // encender
-  digitalWrite(led_abajo, HIGH);  // apagar
-}
-
-// ===============================
-// INTERRUPCIÓN SENSOR ABAJO
-// ===============================
-void ISR_sensor_abajo() {
-
-  digitalWrite(pin_bajar, LOW);   // detener
-
-  digitalWrite(led_arriba, HIGH); // apagar
-  digitalWrite(led_abajo, LOW);   // encender
 }
